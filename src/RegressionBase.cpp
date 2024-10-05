@@ -46,7 +46,7 @@ Eigen::VectorXd RegressionBase::get_hat_theta() {
 Eigen::MatrixXd RegressionBase::transform(const Eigen::MatrixXd &inX) const {
     const long n = inX.cols();
     Eigen::MatrixXd Phi(m_t_k, n);
-    for (int i = 0; i < n; ++i) Phi.col(i) = m_phi(inX.col(i)).col(0);
+    for (int i = 0; i < n; ++i) Phi.col(i) = m_phi(inX.col(i));
     return Phi;
 }
 
