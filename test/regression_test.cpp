@@ -164,6 +164,8 @@ TEST_F(RegressionBaseTest, rlsRegTest) {
     f.open("../../output/rls-mse.txt",std::ios::out | std::ios::app);
     f << sample_portion << " " << err <<std::endl;
     f.close();
+
+    std::cout << std::get<Eigen::VectorXd>(rlr.get_estimated_param()) << std::endl;
 }
 
 TEST_F(RegressionBaseTest, lassoRegTest) {
@@ -180,12 +182,14 @@ TEST_F(RegressionBaseTest, lassoRegTest) {
     const auto func = std::get<std::function<double(double)>>(lasso.get_predict_func());
     reg_plot(X, y, func, "../../output/lassoRegTest" + std::to_string(sample_portion) + ".jpg");
     const auto err = lasso.get_mean_squared_error(Xstar, Ystar);
-    std::cout << "LASSO mean square error: " << err << std::endl;
+    // std::cout << "LASSO mean square error: " << err << std::endl;
 
     std::fstream f;
     f.open("../../output/lasso-mse.txt",std::ios::out | std::ios::app);
     f << sample_portion << " " << err <<std::endl;
     f.close();
+
+    std::cout << std::get<Eigen::VectorXd>(lasso.get_estimated_param()) << std::endl;
 }
 
 TEST_F(RegressionBaseTest, robustRegTest) {
@@ -199,12 +203,14 @@ TEST_F(RegressionBaseTest, robustRegTest) {
     const auto func = std::get<std::function<double(double)>>(rr.get_predict_func());
     reg_plot(X, y, func, "../../output/robustRegTest" + std::to_string(sample_portion) + ".jpg");
     const auto err = rr.get_mean_squared_error(Xstar, Ystar);
-    std::cout << "Robust Regression mean square error: " << err << std::endl;
+    // std::cout << "Robust Regression mean square error: " << err << std::endl;
 
     std::fstream f;
     f.open("../../output/rr-mse.txt",std::ios::out | std::ios::app);
     f << sample_portion << " " << err <<std::endl;
     f.close();
+
+    std::cout << std::get<Eigen::VectorXd>(rr.get_estimated_param()) << std::endl;
 }
 
 TEST_F(RegressionBaseTest, bayesianRegTest) {
@@ -224,10 +230,13 @@ TEST_F(RegressionBaseTest, bayesianRegTest) {
         = std::get<std::function<std::pair<double, double>(double)>>(br.get_predict_func());
     bayesian_reg_plot(X, y, func, "../../output/bayesianRegTest" + std::to_string(sample_portion) + ".jpg");
     const auto err = br.get_mean_squared_error(Xstar, Ystar);
-    std::cout << "Bayesian Regression mean square error: " << err << std::endl;
+    // std::cout << "Bayesian Regression mean square error: " << err << std::endl;
 
     std::fstream f;
     f.open("../../output/bayesian-mse.txt",std::ios::out | std::ios::app);
     f << sample_portion << " " << err <<std::endl;
     f.close();
+
+    const auto [est_mean, est_cov] = std::get<std::pair<Eigen::VectorXd, Eigen::MatrixXd>>(br.get_estimated_param());
+    std::cout << est_mean << " " << est_cov << std::endl;
 }
