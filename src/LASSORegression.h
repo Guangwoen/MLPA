@@ -15,11 +15,11 @@ private:
 public:
     LASSORegression() = delete;
     ~LASSORegression() override = default;
-    LASSORegression(Eigen::RowVectorXd, Eigen::VectorXd, unsigned);
-    LASSORegression(Eigen::RowVectorXd, Eigen::VectorXd, double, unsigned);
-    LASSORegression(Eigen::RowVectorXd, Eigen::VectorXd, double, int, unsigned);
+    LASSORegression(Eigen::MatrixXd, Eigen::VectorXd, unsigned, unsigned);
+    LASSORegression(Eigen::MatrixXd, Eigen::VectorXd, double, unsigned, unsigned);
+    LASSORegression(Eigen::MatrixXd, Eigen::VectorXd, double, int, unsigned, unsigned);
     void estimate() override;
-    Eigen::VectorXd predict(const Eigen::RowVectorXd &) override;
+    Eigen::VectorXd predict(const Eigen::MatrixXd &) override;
 };
 } // namespace mlpa::reg
 

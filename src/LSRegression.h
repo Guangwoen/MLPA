@@ -12,11 +12,11 @@ class LSRegression final : public RegressionBase {
 public:
     LSRegression() = delete;
     ~LSRegression() override = default;
-    LSRegression(Eigen::RowVectorXd, Eigen::VectorXd, unsigned);
-    LSRegression(Eigen::RowVectorXd, Eigen::VectorXd,
-        std::function<Eigen::MatrixXd(Eigen::RowVectorXd)>, unsigned);
+    LSRegression(Eigen::MatrixXd, Eigen::VectorXd, unsigned, unsigned);
+    LSRegression(Eigen::MatrixXd, Eigen::VectorXd,
+        std::function<Eigen::MatrixXd(Eigen::VectorXd)>, unsigned, unsigned);
     void estimate() override;
-    Eigen::VectorXd predict(const Eigen::RowVectorXd&) override;
+    Eigen::VectorXd predict(const Eigen::MatrixXd&) override;
 };
 } // namespace mlpa::reg
 

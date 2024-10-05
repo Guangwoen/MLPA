@@ -12,11 +12,11 @@ class RobustRegression final : public RegressionBase {
 public:
     RobustRegression() = delete;
     ~RobustRegression() override = default;
-    RobustRegression(Eigen::RowVectorXd, Eigen::VectorXd, unsigned);
-    RobustRegression(Eigen::RowVectorXd, Eigen::VectorXd,
-        std::function<Eigen::MatrixXd(Eigen::RowVectorXd)>, unsigned);
+    RobustRegression(Eigen::MatrixXd, Eigen::VectorXd, unsigned, unsigned);
+    RobustRegression(Eigen::MatrixXd, Eigen::VectorXd,
+        std::function<Eigen::MatrixXd(Eigen::VectorXd)>, unsigned, unsigned);
     void estimate() override;
-    Eigen::VectorXd predict(const Eigen::RowVectorXd &) override;
+    Eigen::VectorXd predict(const Eigen::MatrixXd &) override;
 };
 } // namespace mlpa::reg
 

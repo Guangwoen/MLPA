@@ -14,10 +14,10 @@ private:
 public:
     ~RLSRegression() override = default;
     RLSRegression() = delete;
-    RLSRegression(Eigen::RowVectorXd, Eigen::VectorXd, unsigned);
-    RLSRegression(Eigen::RowVectorXd, Eigen::VectorXd, double, unsigned);
+    RLSRegression(Eigen::MatrixXd, Eigen::VectorXd, unsigned, unsigned);
+    RLSRegression(Eigen::MatrixXd, Eigen::VectorXd, double, unsigned, unsigned);
     void estimate() override;
-    Eigen::VectorXd predict(const Eigen::RowVectorXd &) override;
+    Eigen::VectorXd predict(const Eigen::MatrixXd &) override;
 };
 } // namespace mlpa::reg
 

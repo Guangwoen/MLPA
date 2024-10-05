@@ -9,15 +9,17 @@
 #include "RobustRegression.h"
 
 namespace mlpa::reg {
-RobustRegression::RobustRegression(Eigen::RowVectorXd X, Eigen::VectorXd y, const unsigned k=1)
-    : RegressionBase(std::move(X), std::move(y), k) {}
+RobustRegression::RobustRegression(Eigen::MatrixXd X, Eigen::VectorXd y,
+    const unsigned k=1, const unsigned t_k=1)
+    : RegressionBase(std::move(X), std::move(y), k, t_k) {}
 
-RobustRegression::RobustRegression(Eigen::RowVectorXd X, Eigen::VectorXd y,
-    std::function<Eigen::MatrixXd(Eigen::RowVectorXd)> phi, const unsigned k=1)
-        : RegressionBase(std::move(X), std::move(y), std::move(phi), k) {}
+RobustRegression::RobustRegression(Eigen::MatrixXd X, Eigen::VectorXd y,
+    std::function<Eigen::MatrixXd(Eigen::VectorXd)> phi,
+    const unsigned k=1, const unsigned t_k=1)
+        : RegressionBase(std::move(X), std::move(y), std::move(phi), k, t_k) {}
 
 void RobustRegression::estimate() {
-    const auto Phi = m_phi(m_X);
+    const auto Phi = transform(m_X);
 
     const unsigned n_var = m_k + 1;
     Eigen::MatrixXd A(m_n * 2, n_var + m_n);
@@ -57,7 +59,8 @@ void RobustRegression::estimate() {
     for (int i = 0; i < n_var; i++) m_hat_theta(i) = solution[i];
 }
 
-Eigen::VectorXd RobustRegression::predict(const Eigen::RowVectorXd& X_star) {
-    return m_phi(X_star).transpose() * m_hat_theta;
+Eigen::VectorXd RobustRegression::predict(const Eigen::MatrixXd& X_star) {
+    const auto Phi = transform(X_star);
+    return Phi.transpose() * m_hat_theta;
 }
 } // namespace mlpa::reg

@@ -11,21 +11,32 @@
 
 int add(int a, int b);
 
-template <class T>
-T read_txt(const std::string& path) {
+inline Eigen::MatrixXd read_txt(const std::string& path) {
     if (std::ifstream file(path); file.is_open()) {
-        std::vector<double> nums;
-        double item = 0.0;
-        while (file >> item) nums.push_back(item);
-        T ret(nums.size());
-        for (auto i = 0; i < nums.size(); i++) ret(i) = nums[i];
+        std::vector<std::vector<double>> lst;
+        std::string line;
+        while (getline(file, line)) {
+            std::istringstream iss(line);
+            std::string num;
+            std::vector<double> nums;
+            while (getline(iss, num, ' ')) {
+                if (!num.empty()) {
+                    nums.push_back(stod(num));
+                }
+            }
+            lst.push_back(nums);
+        }
+        Eigen::MatrixXd ret(lst.size(), lst[0].size());
+        for (int i = 0; i < lst.size(); i++)
+            for (int j = 0; j < lst[0].size(); j++)
+                ret(i, j) = lst[i][j];
         file.close();
         return ret;
     }
     else {
         std::cerr << "Error opening file " << path << std::endl;
     }
-    return T();
+    return {};
 }
 
 void make_plot(const auto& Xs, const auto& ys, const std::string& output_path);

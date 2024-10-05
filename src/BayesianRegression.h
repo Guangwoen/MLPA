@@ -18,17 +18,18 @@ private:
 public:
     BayesianRegression() = delete;
     ~BayesianRegression() override = default;
-    BayesianRegression(Eigen::RowVectorXd, Eigen::VectorXd, double, double, unsigned);
-    BayesianRegression(Eigen::RowVectorXd, Eigen::VectorXd,
-        std::function<Eigen::MatrixXd(Eigen::RowVectorXd)>,
-        double, double, unsigned);
+    BayesianRegression(Eigen::MatrixXd, Eigen::VectorXd,
+        double, double, unsigned, unsigned);
+    BayesianRegression(Eigen::MatrixXd, Eigen::VectorXd,
+        std::function<Eigen::MatrixXd(Eigen::VectorXd)>,
+        double, double, unsigned, unsigned);
     void estimate() override;
-    [[nodiscard]] double get_mean_squared_error(const Eigen::RowVectorXd &, const Eigen::VectorXd &) const override;
-    [[nodiscard]] std::pair<Eigen::VectorXd, Eigen::MatrixXd> predict_distrib(const Eigen::RowVectorXd &) const;
-    [[nodiscard]] std::function<std::pair<double, double>(double)> get_predict_distrib_func() const;
+    [[nodiscard]] double get_mean_squared_error(const Eigen::MatrixXd &, const Eigen::VectorXd &) const override;
+    [[nodiscard]] std::pair<Eigen::VectorXd, Eigen::MatrixXd> predict_distrib(const Eigen::MatrixXd &) const;
+    [[nodiscard]] std::function<std::pair<double, double>(Eigen::VectorXd)> get_predict_distrib_func() const;
     std::pair<Eigen::VectorXd, Eigen::MatrixXd> get_hat_param();
-    Eigen::VectorXd predict(const Eigen::RowVectorXd &) override;                  // deleted
-    [[nodiscard]] std::function<double(double)> get_predict_func() const override; // deleted
+    Eigen::VectorXd predict(const Eigen::MatrixXd &) override;                  // deleted
+    [[nodiscard]] std::function<double(Eigen::VectorXd)> get_predict_func() const override; // deleted
     Eigen::VectorXd get_hat_theta() override;                                      // deleted
 };
 } // namespace mlpa::reg

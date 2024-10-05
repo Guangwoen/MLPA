@@ -8,19 +8,22 @@
 #include <Eigen/LU>
 
 namespace mlpa::reg {
-LSRegression::LSRegression(Eigen::RowVectorXd X, Eigen::VectorXd y, const unsigned k=1)
-    : RegressionBase(std::move(X), std::move(y), k) {}
+LSRegression::LSRegression(Eigen::MatrixXd X, Eigen::VectorXd y,
+    const unsigned k=1, const unsigned t_k=1)
+    : RegressionBase(std::move(X), std::move(y), k, t_k) {}
 
-LSRegression::LSRegression(Eigen::RowVectorXd X, Eigen::VectorXd y,
-    std::function<Eigen::MatrixXd(Eigen::RowVectorXd)> phi, const unsigned k=1)
-        : RegressionBase(std::move(X), std::move(y), std::move(phi), k) {}
+LSRegression::LSRegression(Eigen::MatrixXd X, Eigen::VectorXd y,
+    std::function<Eigen::MatrixXd(Eigen::VectorXd)> phi,
+    const unsigned k=1, const unsigned t_k=1)
+        : RegressionBase(std::move(X), std::move(y), std::move(phi), k, t_k) {}
 
 void LSRegression::estimate() {
-    const auto Phi = m_phi(m_X);
+    auto Phi = transform(m_X);
     m_hat_theta = (Phi * Phi.transpose()).inverse() * Phi * m_y;
 }
 
-Eigen::VectorXd LSRegression::predict(const Eigen::RowVectorXd& X_star) {
-    return m_phi(X_star).transpose() * m_hat_theta;
+Eigen::VectorXd LSRegression::predict(const Eigen::MatrixXd& X_star) {
+    Eigen::MatrixXd Phi = transform(X_star);
+    return Phi.transpose() * m_hat_theta;
 }
 } // namespace mlpa::reg

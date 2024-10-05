@@ -12,25 +12,29 @@ namespace mlpa::reg {
 class RegressionBase {
 protected:
     unsigned m_n;                                               // # of sample
-    unsigned m_k;                                               // dimension
-    Eigen::RowVectorXd m_X;                                     // sample x
-    Eigen::VectorXd m_y;                                        // sample y
-    Eigen::VectorXd m_theta;                                    // init theta
-    Eigen::VectorXd m_hat_theta;                                // estimated theta
-    std::function<Eigen::MatrixXd(Eigen::RowVectorXd)> m_phi;   // function phi
+    unsigned m_k;                                               // # of feature (d)
+    unsigned m_t_k;                                             // dim after transformation (D)
+    Eigen::MatrixXd m_X;                                        // sample x (d rows, n cols)
+    Eigen::VectorXd m_y;                                        // sample y (n rows)
+    Eigen::VectorXd m_theta;                                    // init theta (D rows)
+    Eigen::VectorXd m_hat_theta;                                // estimated theta (D rows)
+    std::function<Eigen::MatrixXd(Eigen::VectorXd)> m_phi;      // function phi
 public:
     virtual ~RegressionBase() = default;
     RegressionBase() = delete;
-    RegressionBase(Eigen::RowVectorXd, Eigen::VectorXd, unsigned);
-    RegressionBase(Eigen::RowVectorXd, Eigen::VectorXd, std::function<Eigen::MatrixXd(Eigen::RowVectorXd)>, unsigned);
-    RegressionBase(Eigen::RowVectorXd, Eigen::VectorXd, Eigen::VectorXd,
-        std::function<Eigen::MatrixXd(Eigen::RowVectorXd)>, unsigned);
+    RegressionBase(Eigen::MatrixXd, Eigen::VectorXd, unsigned, unsigned);
+    RegressionBase(Eigen::MatrixXd, Eigen::VectorXd,
+        std::function<Eigen::MatrixXd(Eigen::MatrixXd)>, unsigned, unsigned);
+    RegressionBase(Eigen::MatrixXd, Eigen::VectorXd, Eigen::VectorXd,
+        std::function<Eigen::MatrixXd(Eigen::VectorXd)>, unsigned, unsigned);
     virtual void estimate() = 0;
-    virtual Eigen::VectorXd predict(const Eigen::RowVectorXd&) = 0;
-    void set_phi(std::function<Eigen::MatrixXd(Eigen::RowVectorXd)> p);
+    virtual Eigen::VectorXd predict(const Eigen::MatrixXd&) = 0;
+    void set_phi(std::function<Eigen::MatrixXd(Eigen::VectorXd)> p);
     virtual Eigen::VectorXd get_hat_theta();
-    [[nodiscard]] virtual std::function<double(double)> get_predict_func() const;
-    [[nodiscard]] virtual double get_mean_squared_error(const Eigen::RowVectorXd&, const Eigen::VectorXd&) const;
+    [[nodiscard]] Eigen::MatrixXd transform(const Eigen::MatrixXd &) const;
+    [[nodiscard]] virtual std::function<double(Eigen::VectorXd)> get_predict_func() const;
+    [[nodiscard]] virtual double get_mean_squared_error(const Eigen::MatrixXd&, const Eigen::VectorXd&) const;
+    [[nodiscard]] unsigned get_t_k() const;
 };
 } // namespace mlpa::reg
 
