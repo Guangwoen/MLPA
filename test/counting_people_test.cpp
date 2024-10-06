@@ -46,13 +46,13 @@ Eigen::VectorXd CountingPeopleTest::y;
 Eigen::MatrixXd CountingPeopleTest::test_X;
 Eigen::VectorXd CountingPeopleTest::test_y;
 
-constexpr static unsigned order = 1;
-constexpr static unsigned k = 9;
-constexpr static unsigned t_k = 9;
+constexpr static unsigned order = 2;    // order of polynomial func
+constexpr static unsigned k     = 9;    // original dim
+constexpr static unsigned t_k   = 18;   // dim after transformation
 
 void make_plot(
-    const Eigen::VectorXd &true_y,
     const Eigen::VectorXd &ey,
+    const Eigen::VectorXd &true_y,
     const std::string &save_path) {
     const auto f = matplot::figure(true);
     matplot::scatter(matplot::linspace(0, 600),
@@ -60,6 +60,7 @@ void make_plot(
     matplot::hold(matplot::on);
     matplot::scatter(matplot::linspace(0, 600),
         std::vector(ey.data(), ey.data() + ey.size()));
+    matplot::legend({"true value", "estimated value"});
     matplot::hold(matplot::off);
     f->save(save_path);
 }

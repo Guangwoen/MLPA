@@ -5,6 +5,8 @@
 #ifndef POLYNOMIAL_H
 #define POLYNOMIAL_H
 
+#include <iostream>
+
 #include "BayesianRegression.h"
 #include "RegressionBase.h"
 
@@ -18,19 +20,20 @@ private:
     T m_regression;
 
 private:
-    void set_phi();
+    void set_default_phi();
 
 public:
     Polynomial() = delete;
     Polynomial(const Eigen::MatrixXd &X, const Eigen::VectorXd &y,
     const unsigned order, const unsigned k=1, const unsigned t_k=1, const bool z=true)
-    : m_from_zero_order(z), m_order(order), m_regression(T(X, y, k, t_k)) { this->set_phi(); }
+    : m_from_zero_order(z), m_order(order), m_regression(T(X, y, k, t_k)) { this->set_default_phi(); }
     Polynomial(const unsigned order, T &reg, const bool z=true)
     : m_from_zero_order(z), m_order(order), m_regression(reg) {
-        this->set_phi();
+        this->set_default_phi();
     }
     ~Polynomial() = default;
     void estimate();
+    void set_phi(std::function<Eigen::MatrixXd(Eigen::VectorXd)>);
     [[nodiscard]] std::variant<std::pair<Eigen::VectorXd, Eigen::MatrixXd>, Eigen::VectorXd>
     predict(const Eigen::MatrixXd &);
     [[nodiscard]] std::variant<std::function<std::pair<double, double>(Eigen::VectorXd)>,
@@ -41,14 +44,15 @@ public:
 };
 
 template <typename T>
-void Polynomial<T>::set_phi() {
+void Polynomial<T>::set_default_phi() {
     this->m_phi = [this] (const Eigen::VectorXd& x) -> Eigen::MatrixXd {
         const unsigned t_k = this->m_regression.get_t_k();
         Eigen::VectorXd col(t_k);
         int k = 0;
         for (auto i = m_from_zero_order? 0 : 1; i <= m_order; i++)
-            for (int j = 0; j < x.size(); j++)
-                col(k++) = pow(x(j), i);
+            for (int j = 0; j < x.size(); j++) {
+                col(k++) = pow((1.0 + exp(pow(x(j), i))), -1);
+            }
         return col;
     };
     this->m_regression.set_phi(this->m_phi);
@@ -57,6 +61,11 @@ void Polynomial<T>::set_phi() {
 template<typename T>
 void Polynomial<T>::estimate() {
     this->m_regression.estimate();
+}
+
+template<typename T>
+void Polynomial<T>::set_phi(std::function<Eigen::MatrixXd(Eigen::VectorXd)> phi) {
+    this->m_phi = phi;
 }
 
 template<typename T>
