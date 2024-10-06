@@ -25,6 +25,7 @@ public:
         double, double, unsigned, unsigned);
     void estimate() override;
     [[nodiscard]] double get_mean_squared_error(const Eigen::MatrixXd &, const Eigen::VectorXd &) const override;
+    [[nodiscard]] double get_mean_absolute_error(const Eigen::MatrixXd &, const Eigen::VectorXd &) const override;
     [[nodiscard]] std::pair<Eigen::VectorXd, Eigen::MatrixXd> predict_distrib(const Eigen::MatrixXd &) const;
     [[nodiscard]] std::function<std::pair<double, double>(Eigen::VectorXd)> get_predict_distrib_func() const;
     std::pair<Eigen::VectorXd, Eigen::MatrixXd> get_hat_param();

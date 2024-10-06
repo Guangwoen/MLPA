@@ -9,7 +9,3 @@
 int add(int a, int b) {
     return a + b;
 }
-
-void make_plot(const auto &Xs, const auto &ys, const std::string &output_path) {
-
-}

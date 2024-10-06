@@ -39,6 +39,4 @@ inline Eigen::MatrixXd read_txt(const std::string& path) {
     return {};
 }
 
-void make_plot(const auto& Xs, const auto& ys, const std::string& output_path);
-
 #endif //UTILS_H

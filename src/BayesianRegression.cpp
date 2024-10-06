@@ -19,8 +19,8 @@ BayesianRegression::BayesianRegression(Eigen::MatrixXd X, Eigen::VectorXd y,
     m_alpha(alpha), m_sigma_s(sigma_s) {}
 
 void BayesianRegression::estimate() {
-    const auto Phi = transform(m_X);
-    m_param_hat_Cov = (1.0 / m_alpha * Eigen::MatrixXd::Identity(m_k+1, m_k+1)
+    auto Phi = transform(m_X);
+    m_param_hat_Cov = (1.0 / m_alpha * Eigen::MatrixXd::Identity(m_t_k, m_t_k)
         + 1.0 / m_sigma_s * Phi * Phi.transpose()).inverse();
     m_param_hat_mean = 1.0 / m_sigma_s * m_param_hat_Cov * Phi * m_y;
 }
@@ -36,11 +36,23 @@ double BayesianRegression::get_mean_squared_error(
         return diff.squaredNorm() / static_cast<double>(diff.size());
 }
 
+double BayesianRegression::get_mean_absolute_error(
+    const Eigen::MatrixXd &true_x,
+    const Eigen::VectorXd &true_y) const {
+    Eigen::VectorXd py(true_x.cols());
+    for (auto i = 0; i < true_x.cols(); ++i) {
+        py[i] =  this->get_predict_distrib_func()(true_x.col(i)).first;
+    }
+    const Eigen::VectorXd diff = true_y - py;
+    return diff.array().abs().mean();
+}
+
+
 std::pair<Eigen::VectorXd, Eigen::MatrixXd>
     BayesianRegression::predict_distrib(const Eigen::MatrixXd &X_star) const {
-    const auto Phi = transform(X_star);
-    const auto m_hat_mean = Phi * m_param_hat_mean;
-    const auto m_hat_sigma_s = Phi * m_param_hat_Cov * Phi.transpose();
+    auto Phi = (transform(X_star).transpose()).eval();
+    const auto m_hat_mean = (Phi * m_param_hat_mean).eval();
+    const auto m_hat_sigma_s = (Phi * m_param_hat_Cov * Phi.transpose()).eval();
 
     return {m_hat_mean, m_hat_sigma_s};
 }

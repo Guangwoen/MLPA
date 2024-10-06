@@ -68,6 +68,17 @@ double RegressionBase::get_mean_squared_error(
     return diff.squaredNorm() / static_cast<double>(diff.size());
 }
 
+double RegressionBase::get_mean_absolute_error(
+    const Eigen::MatrixXd &true_x,
+    const Eigen::VectorXd &true_y) const {
+    Eigen::VectorXd py(true_x.cols());
+    for (auto i = 0; i < true_x.cols(); ++i) {
+        py[i] = this->get_predict_func()(true_x.col(i));
+    }
+    const Eigen::VectorXd diff = true_y - py;
+    return diff.array().abs().mean();
+}
+
 unsigned RegressionBase::get_t_k() const {
     return this->m_t_k;
 }

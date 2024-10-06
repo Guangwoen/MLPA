@@ -34,6 +34,7 @@ public:
     [[nodiscard]] Eigen::MatrixXd transform(const Eigen::MatrixXd &) const;
     [[nodiscard]] virtual std::function<double(Eigen::VectorXd)> get_predict_func() const;
     [[nodiscard]] virtual double get_mean_squared_error(const Eigen::MatrixXd&, const Eigen::VectorXd&) const;
+    [[nodiscard]] virtual double get_mean_absolute_error(const Eigen::MatrixXd&, const Eigen::VectorXd&) const;
     [[nodiscard]] unsigned get_t_k() const;
 };
 } // namespace mlpa::reg

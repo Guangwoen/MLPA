@@ -19,9 +19,9 @@ RobustRegression::RobustRegression(Eigen::MatrixXd X, Eigen::VectorXd y,
         : RegressionBase(std::move(X), std::move(y), std::move(phi), k, t_k) {}
 
 void RobustRegression::estimate() {
-    const auto Phi = transform(m_X);
+    auto Phi = transform(m_X);
 
-    const unsigned n_var = m_k + 1;
+    const unsigned n_var = m_t_k;
     Eigen::MatrixXd A(m_n * 2, n_var + m_n);
     A << -Phi.transpose(), -Eigen::MatrixXd::Identity(m_n, m_n),
     Phi.transpose(), -Eigen::MatrixXd::Identity(m_n, m_n);

@@ -17,13 +17,13 @@ RLSRegression::RLSRegression(Eigen::MatrixXd X, Eigen::VectorXd y, const double 
 
 void RLSRegression::estimate() {
     const auto Phi = transform(m_X);
-    const auto Phi_mul = Phi * Phi.transpose();
+    const auto Phi_mul = (Phi * Phi.transpose()).eval();
     const auto I = Eigen::MatrixXd::Identity(Phi_mul.rows(), Phi_mul.cols());
     m_hat_theta = (Phi_mul + m_lambda * I).inverse() * Phi * m_y;
 }
 
 Eigen::VectorXd RLSRegression::predict(const Eigen::MatrixXd& X_star) {
-    const auto Phi = transform(X_star);
+    Eigen::MatrixXd Phi = transform(X_star);
     return Phi.transpose() * m_hat_theta;
 }
 }// namespace mlpa::reg

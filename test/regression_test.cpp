@@ -64,7 +64,7 @@ protected:
     void TearDown() override {}
 
     static void SetUpTestSuite() {
-        std::cout << "RegressionBaseTest::SetUpSuite()" << std::endl;
+        std::cout << "RegressionBaseTest::SetUpTestSuite()" << std::endl;
         const auto X_ = read_txt("/Users/cuiguangyuan/Documents/CityU/SemesterA/Machine Learning/Programming Assignments/PA1/PA-1-data-text/polydata_data_sampx.txt");
         const auto y_ = read_txt("/Users/cuiguangyuan/Documents/CityU/SemesterA/Machine Learning/Programming Assignments/PA1/PA-1-data-text/polydata_data_sampy.txt");
         Xstar = read_txt("/Users/cuiguangyuan/Documents/CityU/SemesterA/Machine Learning/Programming Assignments/PA1/PA-1-data-text/polydata_data_polyx.txt");
@@ -76,7 +76,7 @@ protected:
     }
 
     static void TearDownTestSuite() {
-        std::cout << "RegressionBaseTest::TearDownSuite()" << std::endl;
+        std::cout << "RegressionBaseTest::TearDownTestSuite()" << std::endl;
     }
 };
 
@@ -150,13 +150,13 @@ TEST_F(RegressionBaseTest, lsRegTest) {
     f << sample_portion << " " << err <<std::endl;
     f.close();
 
-    std::cout << std::get<Eigen::VectorXd>(lr.get_estimated_param()) << std::endl;
+    // std::cout << std::get<Eigen::VectorXd>(lr.get_estimated_param()) << std::endl;
 }
 
 TEST_F(RegressionBaseTest, rlsRegTest) {
     constexpr double lambda = 0.8;
     mlpa::reg::RLSRegression rl(X, y, lambda, k, t_k);
-    mlpa::Polynomial rlr(k, rl);
+    mlpa::Polynomial rlr(order, rl);
 
     rlr.estimate();
 
@@ -173,14 +173,14 @@ TEST_F(RegressionBaseTest, rlsRegTest) {
     f << sample_portion << " " << err <<std::endl;
     f.close();
 
-    std::cout << std::get<Eigen::VectorXd>(rlr.get_estimated_param()) << std::endl;
+    // std::cout << std::get<Eigen::VectorXd>(rlr.get_estimated_param()) << std::endl;
 }
 
 TEST_F(RegressionBaseTest, lassoRegTest) {
     constexpr double lambda = 0.8;
     constexpr int nWSR = 100;
     mlpa::reg::LASSORegression lasso_r(X, y, lambda, nWSR, k, t_k);
-    mlpa::Polynomial lasso(k, lasso_r);
+    mlpa::Polynomial lasso(order, lasso_r);
 
     lasso.estimate();
 
@@ -197,7 +197,7 @@ TEST_F(RegressionBaseTest, lassoRegTest) {
     f << sample_portion << " " << err <<std::endl;
     f.close();
 
-    std::cout << std::get<Eigen::VectorXd>(lasso.get_estimated_param()) << std::endl;
+    // std::cout << std::get<Eigen::VectorXd>(lasso.get_estimated_param()) << std::endl;
 }
 
 TEST_F(RegressionBaseTest, robustRegTest) {
@@ -218,14 +218,14 @@ TEST_F(RegressionBaseTest, robustRegTest) {
     f << sample_portion << " " << err <<std::endl;
     f.close();
 
-    std::cout << std::get<Eigen::VectorXd>(rr.get_estimated_param()) << std::endl;
+    // std::cout << std::get<Eigen::VectorXd>(rr.get_estimated_param()) << std::endl;
 }
 
 TEST_F(RegressionBaseTest, bayesianRegTest) {
     constexpr double alpha = 0.5;
     constexpr double sigma_s = 0.04;
     mlpa::reg::BayesianRegression b(X, y, alpha, sigma_s, k, t_k);
-    mlpa::Polynomial br(k, b);
+    mlpa::Polynomial br(order, b);
 
     br.estimate();
 
@@ -247,5 +247,5 @@ TEST_F(RegressionBaseTest, bayesianRegTest) {
 
     const auto [est_mean, est_cov] =
         std::get<std::pair<Eigen::VectorXd, Eigen::MatrixXd>>(br.get_estimated_param());
-    std::cout << est_mean << " " << est_cov << std::endl;
+    // std::cout << est_mean << " " << est_cov << std::endl;
 }

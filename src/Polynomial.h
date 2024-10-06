@@ -12,9 +12,10 @@ namespace mlpa {
 template <typename T>
 class Polynomial {
 private:
+    bool m_from_zero_order = true;
     unsigned m_order;
-    T m_regression;
     std::function<Eigen::MatrixXd(Eigen::VectorXd)> m_phi;
+    T m_regression;
 
 private:
     void set_phi();
@@ -22,9 +23,12 @@ private:
 public:
     Polynomial() = delete;
     Polynomial(const Eigen::MatrixXd &X, const Eigen::VectorXd &y,
-    const unsigned order, const unsigned k=1, const unsigned t_k=1)
-    : m_order(order), m_regression(T(X, y, k, t_k)) { this->set_phi(); }
-    Polynomial(unsigned, T &);
+    const unsigned order, const unsigned k=1, const unsigned t_k=1, const bool z=true)
+    : m_from_zero_order(z), m_order(order), m_regression(T(X, y, k, t_k)) { this->set_phi(); }
+    Polynomial(const unsigned order, T &reg, const bool z=true)
+    : m_from_zero_order(z), m_order(order), m_regression(reg) {
+        this->set_phi();
+    }
     ~Polynomial() = default;
     void estimate();
     [[nodiscard]] std::variant<std::pair<Eigen::VectorXd, Eigen::MatrixXd>, Eigen::VectorXd>
@@ -32,14 +36,9 @@ public:
     [[nodiscard]] std::variant<std::function<std::pair<double, double>(Eigen::VectorXd)>,
                 std::function<double(Eigen::VectorXd)>> get_predict_func();
     [[nodiscard]] double get_mean_squared_error(const Eigen::MatrixXd &, const Eigen::VectorXd &);
+    [[nodiscard]] double get_mean_absolute_error(const Eigen::MatrixXd &, const Eigen::VectorXd &);
     std::variant<std::pair<Eigen::VectorXd, Eigen::MatrixXd>, Eigen::VectorXd> get_estimated_param();
 };
-
-template<typename T>
-Polynomial<T>::Polynomial(const unsigned k, T &reg)
-    : m_order(k), m_regression(reg) {
-    this->set_phi();
-}
 
 template <typename T>
 void Polynomial<T>::set_phi() {
@@ -47,7 +46,7 @@ void Polynomial<T>::set_phi() {
         const unsigned t_k = this->m_regression.get_t_k();
         Eigen::VectorXd col(t_k);
         int k = 0;
-        for (auto i = 0; i <= m_order; i++)
+        for (auto i = m_from_zero_order? 0 : 1; i <= m_order; i++)
             for (int j = 0; j < x.size(); j++)
                 col(k++) = pow(x(j), i);
         return col;
@@ -79,6 +78,11 @@ std::variant<std::function<std::pair<double, double>(Eigen::VectorXd)>, std::fun
 template<typename T>
 double Polynomial<T>::get_mean_squared_error(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
     return this->m_regression.get_mean_squared_error(X, y);
+}
+
+template<typename T>
+double Polynomial<T>::get_mean_absolute_error(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
+    return this->m_regression.get_mean_absolute_error(X, y);
 }
 
 template<typename T>
