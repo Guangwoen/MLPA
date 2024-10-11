@@ -6,5 +6,4 @@
 
 namespace mlpa::clst {
 
-
 } // namespace mlpa::clst

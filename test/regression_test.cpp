@@ -59,6 +59,7 @@ protected:
     static Eigen::VectorXd Ystar;
     static long sample_portion;
 
+protected:
     void SetUp() override {}
 
     void TearDown() override {}

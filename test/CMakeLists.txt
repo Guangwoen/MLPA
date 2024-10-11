@@ -6,6 +6,5 @@ include_directories(/Users/cuiguangyuan/Documents/Programs/libs/C++/dist/include
 link_directories(/usr/local/lib)
 link_directories(/Users/cuiguangyuan/Documents/Programs/libs/C++/dist/lib)
 
-# add_executable(MLPA_TEST ${TEST_LIST})
-add_executable(MLPA_TEST regression_test.cpp counting_people_test.cpp)
+add_executable(MLPA_TEST ${TEST_LIST})
 target_link_libraries(MLPA_TEST Matplot++::matplot Clp OsiClp CoinUtils qpOASES mlpa lapack blas gtest gtest_main)
