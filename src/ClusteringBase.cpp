@@ -4,6 +4,41 @@
 
 #include "ClusteringBase.h"
 
-namespace mlpa::clst {
+#include <iostream>
 
+namespace mlpa::clst {
+ClusteringBase::ClusteringBase(Eigen::MatrixXd X, Eigen::RowVectorXi y)
+    : m_n_clusters(1), m_X(std::move(X)), m_y(std::move(y)) {
+    m_n = m_X.cols();
+    m_mu = Eigen::MatrixXd::Random(m_X.rows(), m_n_clusters);
+    m_z = Eigen::MatrixXi::Zero(m_n, m_n_clusters);
+    m_estimated_y = Eigen::RowVectorXi::Random(m_n);
+}
+
+ClusteringBase::ClusteringBase(const int c, Eigen::MatrixXd X, Eigen::RowVectorXi y)
+    : m_n_clusters(c), m_X(std::move(X)), m_y(std::move(y)) {
+    m_n = m_X.cols();
+    m_mu = Eigen::MatrixXd::Random(m_X.rows(), m_n_clusters);
+    m_z = Eigen::MatrixXi::Zero(m_n, m_n_clusters);
+    m_estimated_y = Eigen::RowVectorXi::Random(m_n);
+}
+
+void ClusteringBase::fit() {
+    cluster_assignment();
+    estimate_center();
+}
+
+Eigen::MatrixXd ClusteringBase::get_centers() {
+    return this->m_mu;
+}
+
+Eigen::RowVectorXi ClusteringBase::get_labels() {
+    Eigen::RowVectorXi labels(m_n);
+    for (int i = 0; i < m_n; i++) {
+        for (int j = 0; j < m_n_clusters; j++) {
+            if (m_z(i, j) == 1) labels(i) = j + 1;
+        }
+    }
+    return labels;
+}
 } // namespace mlpa::clst

@@ -142,7 +142,7 @@ TEST_F(RegressionBaseTest, lsRegTest) {
     ASSERT_TRUE(res.size() != 0);
 
     const auto func = std::get<std::function<double(Eigen::VectorXd)>>(lr.get_predict_func());
-    reg_plot(X, y, func, "../../output/lsRegTest" + std::to_string(sample_portion) + ".jpg");
+    reg_plot(X, y, func, "../../output/regression/lsRegTest" + std::to_string(sample_portion) + ".jpg");
     const auto err = lr.get_mean_squared_error(Xstar, Ystar);
     // std::cout << "Least-Square Regression mean square error: " << err << std::endl;
 
@@ -165,7 +165,7 @@ TEST_F(RegressionBaseTest, rlsRegTest) {
     ASSERT_TRUE(res.size() != 0);
 
     const auto func = std::get<std::function<double(Eigen::VectorXd)>>(rlr.get_predict_func());
-    reg_plot(X, y, func, "../../output/rlsRegTest" + std::to_string(sample_portion) + ".jpg");
+    reg_plot(X, y, func, "../../output/regression/rlsRegTest" + std::to_string(sample_portion) + ".jpg");
     const auto err = rlr.get_mean_squared_error(Xstar, Ystar);
     // std::cout << "Regularized LS Regression mean square error: " << err << std::endl;
 
@@ -189,7 +189,7 @@ TEST_F(RegressionBaseTest, lassoRegTest) {
     ASSERT_TRUE(res.size() != 0);
 
     const auto func = std::get<std::function<double(Eigen::VectorXd)>>(lasso.get_predict_func());
-    reg_plot(X, y, func, "../../output/lassoRegTest" + std::to_string(sample_portion) + ".jpg");
+    reg_plot(X, y, func, "../../output/regression/lassoRegTest" + std::to_string(sample_portion) + ".jpg");
     const auto err = lasso.get_mean_squared_error(Xstar, Ystar);
     // std::cout << "LASSO mean square error: " << err << std::endl;
 
@@ -210,7 +210,7 @@ TEST_F(RegressionBaseTest, robustRegTest) {
     ASSERT_TRUE(res.size() != 0);
 
     const auto func = std::get<std::function<double(Eigen::VectorXd)>>(rr.get_predict_func());
-    reg_plot(X, y, func, "../../output/robustRegTest" + std::to_string(sample_portion) + ".jpg");
+    reg_plot(X, y, func, "../../output/regression/robustRegTest" + std::to_string(sample_portion) + ".jpg");
     const auto err = rr.get_mean_squared_error(Xstar, Ystar);
     // std::cout << "Robust Regression mean square error: " << err << std::endl;
 
@@ -237,7 +237,7 @@ TEST_F(RegressionBaseTest, bayesianRegTest) {
 
     const auto func=
         std::get<std::function<std::pair<double, double>(Eigen::VectorXd)>>(br.get_predict_func());
-    bayesian_reg_plot(X, y, func, "../../output/bayesianRegTest" + std::to_string(sample_portion) + ".jpg");
+    bayesian_reg_plot(X, y, func, "../../output/regression/bayesianRegTest" + std::to_string(sample_portion) + ".jpg");
     const auto err = br.get_mean_squared_error(Xstar, Ystar);
     // std::cout << "Bayesian Regression mean square error: " << err << std::endl;
 

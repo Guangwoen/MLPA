@@ -65,7 +65,7 @@ void Polynomial<T>::estimate() {
 
 template<typename T>
 void Polynomial<T>::set_phi(std::function<Eigen::MatrixXd(Eigen::VectorXd)> phi) {
-    this->m_phi = phi;
+    this->m_phi = std::move(phi);
 }
 
 template<typename T>
