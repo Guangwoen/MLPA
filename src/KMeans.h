@@ -13,8 +13,9 @@ public:
     KMeans(Eigen::MatrixXd, Eigen::RowVectorXi);
     KMeans(int, Eigen::MatrixXd, Eigen::RowVectorXi);
     ~KMeans() override = default;
-    void cluster_assignment() override;
-    void estimate_center() override;
+    void fit() override;
+    void cluster_assignment();
+    void estimate_center();
 };
 } // namespace mlpa::clst
 

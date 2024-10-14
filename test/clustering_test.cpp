@@ -7,6 +7,8 @@
 #include <matplot/matplot.h>
 
 #include "../src/Clustering.h"
+#include "../src/EM.h"
+#include "../src/GMM.h"
 #include "../src/KMeans.h"
 
 #include "../src/utils.h"
@@ -46,7 +48,7 @@ Eigen::RowVectorXi ClusteringBaseTest::yC;
 
 constexpr static int n_clusters = 4;
 
-constexpr static int n_iters = 200;
+constexpr static int n_iters = 100;
 
 static void clst_plot(
     const Eigen::MatrixXd &X,
@@ -118,4 +120,52 @@ TEST_F(ClusteringBaseTest, kmeansCClstTest) {
     // std::cout << l << std::endl;
 
     clst_plot(XC, c, l, "../../output/clustering/kmeansClstTestC.jpg");
+}
+
+TEST_F(ClusteringBaseTest, emGmmAClstTest) {
+    mlpa::Clustering<mlpa::clst::EM<mlpa::clst::GMM>> em(XA, yA, n_clusters, n_iters);
+
+    em.fit();
+
+    const auto c = em.get_centers();
+
+    // std::cout << c << std::endl;
+
+    const auto l = em.get_labels();
+
+    // std::cout << l << std::endl;
+
+    clst_plot(XA, c, l, "../../output/clustering/emGmmClstTestA.jpg");
+}
+
+TEST_F(ClusteringBaseTest, emGmmBClstTest) {
+    mlpa::Clustering<mlpa::clst::EM<mlpa::clst::GMM>> em(XB, yB, n_clusters, n_iters);
+
+    em.fit();
+
+    const auto c = em.get_centers();
+
+    // std::cout << c << std::endl;
+
+    const auto l = em.get_labels();
+
+    // std::cout << l << std::endl;
+
+    clst_plot(XB, c, l, "../../output/clustering/emGmmClstTestB.jpg");
+}
+
+TEST_F(ClusteringBaseTest, emGmmCClstTest) {
+    mlpa::Clustering<mlpa::clst::EM<mlpa::clst::GMM>> em(XC, yC, n_clusters, n_iters);
+
+    em.fit();
+
+    const auto c = em.get_centers();
+
+    // std::cout << c << std::endl;
+
+    const auto l = em.get_labels();
+
+    // std::cout << l << std::endl;
+
+    clst_plot(XC, c, l, "../../output/clustering/emGmmClstTestC.jpg");
 }

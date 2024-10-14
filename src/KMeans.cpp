@@ -13,13 +13,18 @@ KMeans::KMeans(Eigen::MatrixXd X, Eigen::RowVectorXi y)
 KMeans::KMeans(const int c, Eigen::MatrixXd X, Eigen::RowVectorXi y)
     : ClusteringBase(c, std::move(X), std::move(y)) {}
 
+void KMeans::fit() {
+    cluster_assignment();
+    estimate_center();
+}
+
 void KMeans::cluster_assignment() {
     for (int i = 0; i < m_n; i++) {
         int min_idx = -1;
         double min_value = MAXFLOAT;
 
         for (int j = 0; j < m_n_clusters; j++) {
-            if (const double e = pow((m_X.col(i) - m_mu.col(j)).squaredNorm(), 2); e < min_value) {
+            if (const double e = pow((m_X.col(i) - m_ctr.col(j)).squaredNorm(), 2); e < min_value) {
                 min_value = e;
                 min_idx = j;
             }
@@ -40,7 +45,7 @@ void KMeans::estimate_center() {
             sum += m_z(i, j);
         }
         if (sum != 0)
-            m_mu.col(j) = mul / sum;
+            m_ctr.col(j) = mul / sum;
     }
 }
 }
