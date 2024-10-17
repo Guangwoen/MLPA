@@ -10,6 +10,7 @@
 #include "../src/EM.h"
 #include "../src/GMM.h"
 #include "../src/KMeans.h"
+#include "../src/MeanShift.h"
 
 #include "../src/utils.h"
 
@@ -48,7 +49,9 @@ Eigen::RowVectorXi ClusteringBaseTest::yC;
 
 constexpr static int n_clusters = 4;
 
-constexpr static int n_iters = 100;
+constexpr static int n_iters = 200;
+
+constexpr static double bandwidth = 2;
 
 static void clst_plot(
     const Eigen::MatrixXd &X,
@@ -63,7 +66,7 @@ static void clst_plot(
     const auto xs = X.row(0);
     const auto ys = X.row(1);
     matplot::hold(matplot::on);
-    for (int i = 0; i < X.cols(); ++i)
+    for (int i = 0; i < xs.cols(); ++i)
         matplot::scatter(std::vector{xs[i]}, std::vector{ys[i]})->color(colors[label[i]-1]);
 
     const auto cx = centers.row(0);
@@ -168,4 +171,55 @@ TEST_F(ClusteringBaseTest, emGmmCClstTest) {
     // std::cout << l << std::endl;
 
     clst_plot(XC, c, l, "../../output/clustering/emGmmClstTestC.jpg");
+}
+
+TEST_F(ClusteringBaseTest, msAClstTest) {
+
+    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XA, yA, bandwidth, n_iters);
+
+    ms.fit();
+
+    const auto c = ms.get_centers();
+
+    // std::cout << c << std::endl;
+
+    const auto l = ms.get_labels();
+
+    // std::cout << l << std::endl;
+
+    clst_plot(XA, c, l, "../../output/clustering/msClstTestA.jpg");
+}
+
+TEST_F(ClusteringBaseTest, msBClstTest) {
+
+    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XB, yB, bandwidth, n_iters);
+
+    ms.fit();
+
+    const auto c = ms.get_centers();
+
+    // std::cout << c << std::endl;
+
+    const auto l = ms.get_labels();
+
+    // std::cout << l << std::endl;
+
+    clst_plot(XB, c, l, "../../output/clustering/msClstTestB.jpg");
+}
+
+TEST_F(ClusteringBaseTest, msCClstTest) {
+
+    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XC, yC, bandwidth, n_iters);
+
+    ms.fit();
+
+    const auto c = ms.get_centers();
+
+    // std::cout << c << std::endl;
+
+    const auto l = ms.get_labels();
+
+    // std::cout << l << std::endl;
+
+    clst_plot(XC, c, l, "../../output/clustering/msClstTestC.jpg");
 }

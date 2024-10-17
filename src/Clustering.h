@@ -19,7 +19,13 @@ public:
     Clustering() = delete;
     explicit Clustering(const T &);
     Clustering(const T &, int);
-    Clustering(const Eigen::MatrixXd &, const Eigen::RowVectorXi &, int, int);
+
+    /*
+     * for mean-shift, third param is bandwidth
+     * cluster count otherwise
+     */
+    Clustering(const Eigen::MatrixXd &, const Eigen::RowVectorXi &, double, int);
+
     void fit();
     Eigen::MatrixXd get_centers();
     Eigen::RowVectorXi get_labels();
@@ -33,7 +39,7 @@ Clustering<T>::Clustering(const T &c, const int i): m_n_iter(i), m_clustering(c)
 
 template<typename T>
 Clustering<T>::Clustering(const Eigen::MatrixXd &X, const Eigen::RowVectorXi &y,
-    const int c, const int i): m_n_iter(i), m_clustering(T(c, X, y)) {}
+    const double c, const int i): m_n_iter(i), m_clustering(T(c, X, y)) {}
 
 template<typename T>
 void Clustering<T>::fit() {

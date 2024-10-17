@@ -8,8 +8,11 @@
 #include <iostream>
 #include <fstream>
 #include <Eigen/Core>
+#include <Eigen/LU>
 
 int add(int a, int b);
+
+double gaussian(const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::MatrixXd &);
 
 template <typename T=double>
 Eigen::MatrixX<T> read_txt(const std::string& path) {
