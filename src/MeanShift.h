@@ -35,14 +35,9 @@ MeanShift<T>::MeanShift(const double h, Eigen::MatrixXd X, Eigen::RowVectorXi y)
 template<typename T>
 void MeanShift<T>::fit() {
     for (int i = 0; i < m_X.cols(); ++i) {
-        Eigen::VectorXd xi = Eigen::VectorXd::Zero(m_X.rows());
-        double ni = 0.0;
-        for (int k = 0; k < m_X.cols(); ++k) {
-            const double kv = this->m_kernel.calc(m_X.col(k), this->m_data_points.col(i));
-            xi += m_X.col(k) * kv;
-            ni += kv;
-        }
-        this->m_data_points.col(i) = xi / ni;
+        Eigen::RowVectorXd weight = this->m_kernel.calc(m_X, this->m_data_points.col(i));
+        Eigen::MatrixXd mul_x = m_X.array().rowwise() * weight.array();
+        this->m_data_points.col(i) = mul_x.rowwise().sum() / weight.sum();
     }
 }
 
@@ -56,7 +51,7 @@ Eigen::MatrixXd MeanShift<T>::get_centers() {
     }
     std::ranges::sort(centers);
     auto new_end = std::unique(centers.begin(), centers.end(), [] (
-        const std::vector<double> & p1, const std::vector<double> & p2, const double tolerance=1)  {
+        const std::vector<double> & p1, const std::vector<double> & p2, const double tolerance=0.01)  {
             bool b = true;
             for (int i = 0; i < p1.size(); ++i) {
                 b = b && abs(p1[i] - p2[i]) >= tolerance;
@@ -64,8 +59,6 @@ Eigen::MatrixXd MeanShift<T>::get_centers() {
             return !b;
     });
     centers.erase(new_end, centers.end());
-
-    std::cout << centers.size() << std::endl;
 
     this->m_n_cur_clusters = static_cast<int>(centers.size());
     Eigen::MatrixXd ret(m_X.rows(), m_n_cur_clusters);

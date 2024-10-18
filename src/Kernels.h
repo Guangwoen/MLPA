@@ -10,24 +10,15 @@
 #include "utils.h"
 
 namespace mlpa::clst {
-class Kernel {
-protected:
+class GaussianKernel final {
+private:
     double m_h;
-
-public:
-    Kernel() = delete;
-    explicit Kernel(const double h): m_h(h) {};
-    virtual ~Kernel() = default;
-    virtual double calc(const Eigen::VectorXd &, const Eigen::VectorXd &) = 0;
-};
-
-class GaussianKernel final : public Kernel {
 public:
     GaussianKernel() = delete;
-    explicit GaussianKernel(const double h): Kernel(h) {};
-    double calc(const Eigen::VectorXd &X, const Eigen::VectorXd &mu) override {
-        const auto d = static_cast<int>(X.rows());
-        return gaussian(X, mu, Eigen::MatrixXd::Identity(d, d) * m_h * m_h);
+    explicit GaussianKernel(const double h): m_h(h) {};
+    [[nodiscard]] Eigen::RowVectorXd calc(const Eigen::MatrixXd &X, const Eigen::VectorXd &mu) const {
+        const auto distance = (X.colwise() - mu).colwise().norm().eval();
+        return (1 / (m_h * sqrt(2 * M_PI))) * exp(-0.5 * (distance / m_h).array().pow(2));
     };
 };
 }

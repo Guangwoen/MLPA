@@ -49,9 +49,9 @@ Eigen::RowVectorXi ClusteringBaseTest::yC;
 
 constexpr static int n_clusters = 4;
 
-constexpr static int n_iters = 200;
+constexpr static int n_iters = 300;
 
-constexpr static double bandwidth = 2;
+constexpr static double bandwidth = 1.715;
 
 static void clst_plot(
     const Eigen::MatrixXd &X,
@@ -173,7 +173,7 @@ TEST_F(ClusteringBaseTest, emGmmCClstTest) {
     clst_plot(XC, c, l, "../../output/clustering/emGmmClstTestC.jpg");
 }
 
-TEST_F(ClusteringBaseTest, msAClstTest) {
+TEST_F(ClusteringBaseTest, AmsClstTest) {
 
     mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XA, yA, bandwidth, n_iters);
 
@@ -190,7 +190,7 @@ TEST_F(ClusteringBaseTest, msAClstTest) {
     clst_plot(XA, c, l, "../../output/clustering/msClstTestA.jpg");
 }
 
-TEST_F(ClusteringBaseTest, msBClstTest) {
+TEST_F(ClusteringBaseTest, BmsClstTest) {
 
     mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XB, yB, bandwidth, n_iters);
 
@@ -207,7 +207,7 @@ TEST_F(ClusteringBaseTest, msBClstTest) {
     clst_plot(XB, c, l, "../../output/clustering/msClstTestB.jpg");
 }
 
-TEST_F(ClusteringBaseTest, msCClstTest) {
+TEST_F(ClusteringBaseTest, CmsClstTest) {
 
     mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XC, yC, bandwidth, n_iters);
 
