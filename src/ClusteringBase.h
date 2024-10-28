@@ -7,6 +7,8 @@
 
 #include <Eigen/Core>
 
+#define C_TOLERANCE 1e-3
+
 namespace mlpa::clst {
 class ClusteringBase {
 protected:
@@ -23,7 +25,7 @@ public:
     ClusteringBase(Eigen::MatrixXd, Eigen::RowVectorXi);
     ClusteringBase(int, Eigen::MatrixXd, Eigen::RowVectorXi);
     virtual ~ClusteringBase() = default;
-    virtual void fit() = 0;
+    virtual void fit(int) = 0;
     virtual Eigen::MatrixXd get_centers();
     virtual Eigen::RowVectorXi get_labels();
 };

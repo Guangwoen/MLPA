@@ -12,7 +12,6 @@ namespace mlpa {
 template <typename T>
 class Clustering {
 private:
-    int m_n_iter;
     T m_clustering;
 
 public:
@@ -24,28 +23,34 @@ public:
      * for mean-shift, third param is bandwidth
      * cluster count otherwise
      */
-    Clustering(const Eigen::MatrixXd &, const Eigen::RowVectorXi &, double, int);
+    Clustering(const Eigen::MatrixXd &, const Eigen::RowVectorXi &, double);
+    Clustering(const Eigen::MatrixXd &, const Eigen::RowVectorXi &, double, double);
 
-    void fit();
+    void fit(int=-1);
     Eigen::MatrixXd get_centers();
     Eigen::RowVectorXi get_labels();
 };
 
 template<typename T>
-Clustering<T>::Clustering(const T &c): m_n_iter(1), m_clustering(c) {}
+Clustering<T>::Clustering(const T &c): m_clustering(c) {}
 
 template<typename T>
-Clustering<T>::Clustering(const T &c, const int i): m_n_iter(i), m_clustering(c) {}
+Clustering<T>::Clustering(const T &c, const int i): m_clustering(c) {}
 
 template<typename T>
 Clustering<T>::Clustering(const Eigen::MatrixXd &X, const Eigen::RowVectorXi &y,
-    const double c, const int i): m_n_iter(i), m_clustering(T(c, X, y)) {}
+    const double c): m_clustering(T(c, X, y)) {}
+
+template<typename MeanShift>
+Clustering<MeanShift>::Clustering(const Eigen::MatrixXd &X, const Eigen::RowVectorXi &y,
+    const double bw, const double t): m_clustering(MeanShift(bw, X, y, t)) {}
 
 template<typename T>
-void Clustering<T>::fit() {
-    for (int i = 0; i < m_n_iter; i++) {
-        m_clustering.fit();
-    }
+void Clustering<T>::fit(const int max_iter) {
+    if (max_iter == -1)
+        m_clustering.fit(std::numeric_limits<int>::max());
+    else
+        m_clustering.fit(max_iter);
 }
 
 template<typename T>

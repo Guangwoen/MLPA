@@ -23,7 +23,7 @@ private:
 public:
     EM() = delete;
     EM(int, Eigen::MatrixXd, Eigen::RowVectorXi);
-    void fit() override;
+    void fit(int) override;
     Eigen::RowVectorXi get_labels() override;
 };
 
@@ -72,13 +72,23 @@ void EM<GMM>::MStep() {
 }
 
 template<typename T>
-void EM<T>::fit() {
+void EM<T>::fit(const int max_iter) {
 
-    EStep();
-    MStep();
+    bool has_converged = false;
+    int iter = 0;
 
-    for (int i = 0; i < m_n_clusters; i++) {
-        m_ctr.col(i) = this->m_model.get_mu(i);
+    while (!has_converged && iter < max_iter) {
+        iter++;
+        Eigen::MatrixXd old_centroids = m_ctr;
+
+        EStep();
+        MStep();
+
+        for (int i = 0; i < m_n_clusters; i++) {
+            m_ctr.col(i) = this->m_model.get_mu(i);
+        }
+
+        has_converged = (old_centroids - m_ctr).norm() < C_TOLERANCE;
     }
 }
 

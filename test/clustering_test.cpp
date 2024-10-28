@@ -49,9 +49,11 @@ Eigen::RowVectorXi ClusteringBaseTest::yC;
 
 constexpr static int n_clusters = 4;
 
-constexpr static int n_iters = 300;
+constexpr static int n_iters = 800;
 
-constexpr static double bandwidth = 1.715;
+constexpr static double bandwidth = 1.704;
+
+constexpr static double tolerance = 1e-2;
 
 static void clst_plot(
     const Eigen::MatrixXd &X,
@@ -78,7 +80,7 @@ static void clst_plot(
 }
 
 TEST_F(ClusteringBaseTest, kmeansAClstTest) {
-    mlpa::Clustering<mlpa::clst::KMeans> km(XA, yA, n_clusters, n_iters);
+    mlpa::Clustering<mlpa::clst::KMeans> km(XA, yA, n_clusters);
 
     km.fit();
 
@@ -94,7 +96,7 @@ TEST_F(ClusteringBaseTest, kmeansAClstTest) {
 }
 
 TEST_F(ClusteringBaseTest, kmeansBClstTest) {
-    mlpa::Clustering<mlpa::clst::KMeans> km(XB, yB, n_clusters, n_iters);
+    mlpa::Clustering<mlpa::clst::KMeans> km(XB, yB, n_clusters);
 
     km.fit();
 
@@ -110,7 +112,7 @@ TEST_F(ClusteringBaseTest, kmeansBClstTest) {
 }
 
 TEST_F(ClusteringBaseTest, kmeansCClstTest) {
-    mlpa::Clustering<mlpa::clst::KMeans> km(XC, yC, n_clusters, n_iters);
+    mlpa::Clustering<mlpa::clst::KMeans> km(XC, yC, n_clusters);
 
     km.fit();
 
@@ -126,7 +128,7 @@ TEST_F(ClusteringBaseTest, kmeansCClstTest) {
 }
 
 TEST_F(ClusteringBaseTest, emGmmAClstTest) {
-    mlpa::Clustering<mlpa::clst::EM<mlpa::clst::GMM>> em(XA, yA, n_clusters, n_iters);
+    mlpa::Clustering<mlpa::clst::EM<mlpa::clst::GMM>> em(XA, yA, n_clusters);
 
     em.fit();
 
@@ -142,7 +144,7 @@ TEST_F(ClusteringBaseTest, emGmmAClstTest) {
 }
 
 TEST_F(ClusteringBaseTest, emGmmBClstTest) {
-    mlpa::Clustering<mlpa::clst::EM<mlpa::clst::GMM>> em(XB, yB, n_clusters, n_iters);
+    mlpa::Clustering<mlpa::clst::EM<mlpa::clst::GMM>> em(XB, yB, n_clusters);
 
     em.fit();
 
@@ -158,7 +160,7 @@ TEST_F(ClusteringBaseTest, emGmmBClstTest) {
 }
 
 TEST_F(ClusteringBaseTest, emGmmCClstTest) {
-    mlpa::Clustering<mlpa::clst::EM<mlpa::clst::GMM>> em(XC, yC, n_clusters, n_iters);
+    mlpa::Clustering<mlpa::clst::EM<mlpa::clst::GMM>> em(XC, yC, n_clusters);
 
     em.fit();
 
@@ -175,9 +177,9 @@ TEST_F(ClusteringBaseTest, emGmmCClstTest) {
 
 TEST_F(ClusteringBaseTest, AmsClstTest) {
 
-    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XA, yA, bandwidth, n_iters);
+    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XA, yA, bandwidth, tolerance);
 
-    ms.fit();
+    ms.fit(n_iters);
 
     const auto c = ms.get_centers();
 
@@ -192,9 +194,9 @@ TEST_F(ClusteringBaseTest, AmsClstTest) {
 
 TEST_F(ClusteringBaseTest, BmsClstTest) {
 
-    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XB, yB, bandwidth, n_iters);
+    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XB, yB, bandwidth, tolerance);
 
-    ms.fit();
+    ms.fit(n_iters);
 
     const auto c = ms.get_centers();
 
@@ -209,9 +211,9 @@ TEST_F(ClusteringBaseTest, BmsClstTest) {
 
 TEST_F(ClusteringBaseTest, CmsClstTest) {
 
-    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XC, yC, bandwidth, n_iters);
+    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XC, yC, bandwidth, tolerance);
 
-    ms.fit();
+    ms.fit(n_iters);
 
     const auto c = ms.get_centers();
 
