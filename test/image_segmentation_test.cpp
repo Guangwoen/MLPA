@@ -31,19 +31,19 @@ protected:
     static void TearDownTestSuite() {};
 };
 
-const std::string ImageSegTest::image_name = "310007";
+const std::string ImageSegTest::image_name = "21077";
 Eigen::MatrixXd ImageSegTest::image;
 
 constexpr static int n_clusters = 3;
 
-constexpr static int max_iter = 350;
+constexpr static int max_iter = 300;
 
-constexpr static double bandwidth = 79.2;
+constexpr static double bandwidth = 14.877220303976163;
 
 static void seg_plot(const Eigen::RowVectorXi &label, const std::string &image_name, const std::string &method) {
     std::ofstream out;
     out.open("/Users/cuiguangyuan/Documents/CityU/SemesterA/Machine Learning/MLPA/output/image_segmentation/labels/" + image_name + "-" + method + ".txt");
-    out << label.array();
+    out << label;
     out.close();
 }
 

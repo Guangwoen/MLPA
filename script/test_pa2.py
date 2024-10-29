@@ -17,7 +17,7 @@ import scipy.io as sio
 def demo():
     import scipy.cluster.vq as vq
 
-    image_name = '310007'
+    image_name = '21077'
     methods=['Kmeans', 'EmGmm', 'Meanshift']
 
     for method in methods:

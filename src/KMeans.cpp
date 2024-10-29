@@ -38,7 +38,7 @@ void KMeans::cluster_assignment() {
         double min_value = std::numeric_limits<double>::max();
 
         for (int j = 0; j < m_n_clusters; j++) {
-            if (const double e = pow((m_X.col(i) - m_ctr.col(j)).squaredNorm(), 2); e < min_value) {
+            if (const double e = (m_X.col(i) - m_ctr.col(j)).squaredNorm(); e < min_value) {
                 min_value = e;
                 min_idx = j;
             }
@@ -70,7 +70,7 @@ void KMeans::initialize_centroids() {
     std::uniform_int_distribution<> dis(0, m_n - 1);
 
     for (int j = 0; j < m_n_clusters; j++) {
-        int random_index = dis(gen);
+        const int random_index = dis(gen);
         m_ctr.col(j) = m_X.col(random_index);
     }
 }

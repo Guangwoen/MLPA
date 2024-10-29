@@ -18,6 +18,7 @@ private:
     int m_n_cur_clusters;
     T m_kernel;
     Eigen::MatrixXd m_data_points;
+    std::mutex mtx;
 
 public:
     MeanShift() = delete;
@@ -39,22 +40,20 @@ void MeanShift<T>::fit(const int max_iter) {
     bool has_converged = false;
     int iter = 0;
     while (!has_converged && iter < max_iter) {
-        std::cout << "Iteration " << iter << std::endl;
+        // std::cout << "Iteration " << iter << std::endl;
         iter++;
 
         std::vector<std::thread> threads; // Create a vector to hold threads
-        for (int i = 0; i < m_X.cols(); ++i) {
+        for (int i = 0; i < this->m_data_points.cols(); ++i) {
             threads.emplace_back([&, i] {
                 Eigen::RowVectorXd weight = this->m_kernel.calc(m_X, this->m_data_points.col(i));
                 Eigen::MatrixXd mul_x = m_X.array().rowwise() * weight.array();
                 if (weight.sum() == 0) return;
+                std::lock_guard lock(mtx);
                 this->m_data_points.col(i) = mul_x.rowwise().sum() / weight.sum();
             });
         }
-
-        for (auto& t : threads) { // Join all threads
-            t.join();
-        }
+        for (auto& t : threads) t.join();
 
         auto old_ctrs = this->m_ctr;
         auto new_ctrs = get_centers();
