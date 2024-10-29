@@ -26,22 +26,19 @@ protected:
 
     static void SetUpTestSuite() {
         image = read_txt("/Users/cuiguangyuan/Documents/CityU/SemesterA/Machine Learning/Programming Assignments/PA2/images_txt/" + image_name + "_X.txt");
-        image = whiten(image);
     };
 
     static void TearDownTestSuite() {};
 };
 
-const std::string ImageSegTest::image_name = "21077";
+const std::string ImageSegTest::image_name = "310007";
 Eigen::MatrixXd ImageSegTest::image;
 
-constexpr static int n_clusters = 2;
+constexpr static int n_clusters = 3;
 
-constexpr static int max_iter = 100;
+constexpr static int max_iter = 350;
 
-constexpr static double bandwidth = 0.8;
-
-constexpr static double tolerance = 1e-5;
+constexpr static double bandwidth = 79.2;
 
 static void seg_plot(const Eigen::RowVectorXi &label, const std::string &image_name, const std::string &method) {
     std::ofstream out;
@@ -51,6 +48,7 @@ static void seg_plot(const Eigen::RowVectorXi &label, const std::string &image_n
 }
 
 TEST_F(ImageSegTest, kmeansImgSegTest) {
+    image = whiten(image);
     mlpa::Clustering<mlpa::clst::KMeans> km(image, {}, n_clusters);
 
     km.fit();
@@ -61,6 +59,7 @@ TEST_F(ImageSegTest, kmeansImgSegTest) {
 }
 
 TEST_F(ImageSegTest, emGmmImgSegTest) {
+    image = whiten(image);
     mlpa::Clustering<mlpa::clst::EM<mlpa::clst::GMM>> em(image, {}, n_clusters);
 
     em.fit();
@@ -76,7 +75,9 @@ TEST_F(ImageSegTest, msImgSegTest) {
     //
     // std::cout << estimated_bandwidth << std::endl;
 
-    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(image, {}, bandwidth, tolerance);
+    // std::cout << image << std::endl;
+
+    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(image, {}, bandwidth);
 
     ms.fit(max_iter);
 

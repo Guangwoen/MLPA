@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <random>
+#include <thread>
 
 #include "ClusteringBase.h"
 
@@ -34,14 +35,21 @@ EM<T>::EM(const int c, Eigen::MatrixXd X, Eigen::RowVectorXi y)
 
 template<typename GMM>
 void EM<GMM>::EStep() {
+    std::vector<std::thread> threads;
     for (int i = 0; i < m_n; i++) {
-        auto cur_X = m_X.col(i);
-        const double sum = m_model.get_weighted_sum(cur_X);
+        threads.emplace_back([&, i] {
+            auto cur_X = this->m_X.col(i);
+            const double sum = this->m_model.get_weighted_sum(cur_X);
 
-        for (int j = 0; j < m_n_clusters; j++) {
-            const double val = m_model.get_one_weighted_value(cur_X, j);
-            m_z(i, j) = val / sum;
-        }
+            for (int j = 0; j < m_n_clusters; j++) {
+                const double val = this->m_model.get_one_weighted_value(cur_X, j);
+                this->m_z(i, j) = val / sum;
+            }
+        });
+    }
+
+    for (auto& t : threads) { // Join all threads
+        t.join();
     }
 }
 
@@ -73,6 +81,7 @@ void EM<GMM>::MStep() {
 
 template<typename T>
 void EM<T>::fit(const int max_iter) {
+    Eigen::initParallel();
 
     bool has_converged = false;
     int iter = 0;

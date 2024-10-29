@@ -24,7 +24,6 @@ public:
      * cluster count otherwise
      */
     Clustering(const Eigen::MatrixXd &, const Eigen::RowVectorXi &, double);
-    Clustering(const Eigen::MatrixXd &, const Eigen::RowVectorXi &, double, double);
 
     void fit(int=-1);
     Eigen::MatrixXd get_centers();
@@ -40,10 +39,6 @@ Clustering<T>::Clustering(const T &c, const int i): m_clustering(c) {}
 template<typename T>
 Clustering<T>::Clustering(const Eigen::MatrixXd &X, const Eigen::RowVectorXi &y,
     const double c): m_clustering(T(c, X, y)) {}
-
-template<typename MeanShift>
-Clustering<MeanShift>::Clustering(const Eigen::MatrixXd &X, const Eigen::RowVectorXi &y,
-    const double bw, const double t): m_clustering(MeanShift(bw, X, y, t)) {}
 
 template<typename T>
 void Clustering<T>::fit(const int max_iter) {

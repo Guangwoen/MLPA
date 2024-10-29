@@ -51,9 +51,7 @@ constexpr static int n_clusters = 4;
 
 constexpr static int n_iters = 800;
 
-constexpr static double bandwidth = 1.704;
-
-constexpr static double tolerance = 1e-2;
+constexpr static double bandwidth = 2.6;
 
 static void clst_plot(
     const Eigen::MatrixXd &X,
@@ -177,7 +175,7 @@ TEST_F(ClusteringBaseTest, emGmmCClstTest) {
 
 TEST_F(ClusteringBaseTest, AmsClstTest) {
 
-    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XA, yA, bandwidth, tolerance);
+    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XA, yA, bandwidth);
 
     ms.fit(n_iters);
 
@@ -194,7 +192,7 @@ TEST_F(ClusteringBaseTest, AmsClstTest) {
 
 TEST_F(ClusteringBaseTest, BmsClstTest) {
 
-    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XB, yB, bandwidth, tolerance);
+    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XB, yB, bandwidth);
 
     ms.fit(n_iters);
 
@@ -211,7 +209,7 @@ TEST_F(ClusteringBaseTest, BmsClstTest) {
 
 TEST_F(ClusteringBaseTest, CmsClstTest) {
 
-    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XC, yC, bandwidth, tolerance);
+    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(XC, yC, bandwidth);
 
     ms.fit(n_iters);
 

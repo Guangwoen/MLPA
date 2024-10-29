@@ -7,7 +7,7 @@
 
 #include <Eigen/Core>
 
-#define C_TOLERANCE 1e-3
+#define C_TOLERANCE 1e-5
 
 namespace mlpa::clst {
 class ClusteringBase {
