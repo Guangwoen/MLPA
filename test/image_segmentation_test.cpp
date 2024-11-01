@@ -31,14 +31,14 @@ protected:
     static void TearDownTestSuite() {};
 };
 
-const std::string ImageSegTest::image_name = "21077";
+const std::string ImageSegTest::image_name = "62096";
 Eigen::MatrixXd ImageSegTest::image;
 
-constexpr static int n_clusters = 3;
+constexpr static int n_clusters = 5;
 
-constexpr static int max_iter = 300;
+constexpr static int max_iter = 350;
 
-constexpr static double bandwidth = 14.877220303976163;
+constexpr static double bandwidth = 14.688657407491657;
 
 static void seg_plot(const Eigen::RowVectorXi &label, const std::string &image_name, const std::string &method) {
     std::ofstream out;
@@ -71,12 +71,37 @@ TEST_F(ImageSegTest, emGmmImgSegTest) {
 
 TEST_F(ImageSegTest, msImgSegTest) {
 
-    // const auto estimated_bandwidth = estimate_bandwidth(image, 0.05);
-    //
-    // std::cout << estimated_bandwidth << std::endl;
+    mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(image, {}, bandwidth);
 
-    // std::cout << image << std::endl;
+    ms.fit(max_iter);
 
+    const auto l = ms.get_labels();
+
+    seg_plot(l, image_name, "Meanshift");
+}
+
+TEST_F(ImageSegTest, kmeansWeightedImgSegTest) {
+    constexpr double lambda = 0.5;
+    image = whiten(image);
+    image.row(0) *= lambda;
+    image.row(1) *= lambda;
+    image.row(2) *= 1 - lambda;
+    image.row(3) *= 1 - lambda;
+    mlpa::Clustering<mlpa::clst::KMeans> km(image, {}, n_clusters);
+
+    km.fit();
+
+    const auto l = km.get_labels();
+
+    seg_plot(l, image_name, "Kmeans");
+}
+
+TEST_F(ImageSegTest, msWeightedImgSegTest) {
+    constexpr double lambda = 0.5;
+    image.row(0) *= lambda;
+    image.row(1) *= lambda;
+    image.row(2) *= 1 - lambda;
+    image.row(3) *= 1 - lambda;
     mlpa::Clustering<mlpa::clst::MeanShift<mlpa::clst::GaussianKernel>> ms(image, {}, bandwidth);
 
     ms.fit(max_iter);
